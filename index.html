@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>CSV to List Converter</title>
+    
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700|Quicksand:300,400,500" rel="stylesheet">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="js/plugins/papaparse.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
+        <script src="js/plugins/ui-bootstrap.min.js"></script>
+
+        <script src="https://unpkg.com/docx@4.0.0/build/index.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+    
+        <script src="js/app.js"></script>
+
+        <link href="css/plugins/bootstrap.min.css" rel="stylesheet">
+
+        <link href="css/app.css" rel="stylesheet">
+
+        <link rel="stylesheet" href="css/fonts/fontawesome5/fontawesome-all.min.css">
+
+        <script>
+            $(function() {
+                
+                $("#filePicker").on("change", function(event) {
+                    let files = event.target.files;
+                    if(files.length < 1) return;
+                    
+                    let file = files[0];
+
+                    
+
+                    /*var reader = new FileReader();
+
+                    // Closure to capture the file information.
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                            console.log(e.target.result);
+                        };
+                    })(file);
+
+                    reader.readAsText(file);*/
+
+                });
+                
+            });
+        </script>
+    </head>
+    <body ng-app="csvToList" ng-controller="appController" ng-cloak>
+
+        <div ng-if="showLoader" class="fullscreen-wrapper">
+            <div class="loader">Loading...</div>
+        </div>
+
+        <div class="container">
+            <div class="header-wrapper" style="text-align: center;">
+                <h1>CSV <i class="fal fa-arrow-right"></i> List<br><b style="font-family: 'Quicksand' !important;">Converter</b></h1>
+            </div>
+
+            <div class="step-wrapper">
+                <div class="step-header">
+                   <span class="step-number">1</span><span class="step-title">Select CSV</span>
+                </div>
+
+                <div class="upload-btn-wrapper">
+                    <button class="btn btn-primary">Choose file</button><span style="margin-left: 5px;">{{getSelectedFileName()}}</span>
+                    <input type="file" id="filePicker" accept=".csv" select-ng-files ng-model="csvFile"/>
+                </div>
+            </div>
+
+            <div ng-show="csvFileLoaded">
+                <div class="step-wrapper">
+                    <div class="step-header">
+                        <span class="step-number">2</span><span class="step-title">Select Headers</span>
+                    </div>
+                    <div ng-repeat="header in headers">
+                        <label class="control control--checkbox">{{header | stripHtml}}
+                            <input type="checkbox" ng-checked="headerIsSelected(header)" ng-click="toggleSelectedHeader(header)"/>
+                            <div class="control__indicator"></div>
+                        </label>
+                    </div>          
+                </div>
+                
+                <div ng-show="hasOneHeaderSelected()">
+                    <div class="step-wrapper">
+                        <div class="step-header">
+                            <span class="step-number">3</span><span class="step-title">Output Options</span>
+                        </div>
+    
+                        <label class="control control--checkbox">Skip Empty Cells
+                            <input type="checkbox" ng-model="skipEmptyCells"/>
+                            <div class="control__indicator"></div>
+                        </label>
+
+                        <label class="control control--checkbox">Strip HTML
+                            <input type="checkbox" ng-model="stripHtml"/>
+                            <div class="control__indicator"></div>
+                        </label>
+    
+                        <div class="form-group">
+                            <span for="numberOfLines">Output File Type</span>
+                            <select class="form-control">
+                                <option>.docx (Microsoft Word)</option>
+                            </select>
+                        </div>
+                        
+                    </div>
+        
+                    <div class="step-wrapper">
+                        <div class="step-header">
+                            <span class="step-number">4</span><span class="step-title">Convert</span>
+                        </div>
+                        <button class="btn btn-primary" ng-click="convertCsv()">Convert & Download</button>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <span class="made-with-love-wrapper">
+                        Made with <i class="fa fa-heart pound"></i> by <b>Erik</b>
+                    </span>  
+                </div>
+            </div>                  
+        </div>
+    </body>
+</html>
